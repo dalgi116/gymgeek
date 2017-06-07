@@ -1,4 +1,4 @@
-# Šachovnice
+# Sachovnice
 def vytvor_sachovnici():
     sachovnice = []
     for i in range(3):
@@ -6,13 +6,49 @@ def vytvor_sachovnici():
         for policko in range(3):
             sachovnice[i].append(" ")
     return sachovnice
-#hraci_plocha = vytvor_sachovnici()
 
+# Hraci plocha
 def zobraz_plochu(plocha):
     for radek in plocha:
         print(radek)
-#zobraz_plochu(hraci_plocha)
 
+# Konec hry
+def zkontroluj(plocha, hrac):
+    for radek in plocha:
+        znaku = 0
+        for policko in radek:
+            if policko == hrac:
+                znaku += 1
+            else:
+                    znaku = 0
+            if znaku == 3:
+                return True
+    for cislo_sloupce in range(3):
+        znaku = 0
+        for cislo_radku in range(3):
+            if plocha[cislo_radku][cislo_sloupce] == hrac:
+                znaku += 1
+            else:
+                znaku = 0
+        if znaku == 3:
+            return True
+    zleva = 0
+    zprava = 0
+    for i in range(3):
+        if plocha[i][i] == hrac:
+            zleva += 1
+        else:
+            zleva = 0
+        if plocha[i][2 - i] == hrac:
+            zprava += 1
+        else:
+            zprava = 0
+    if zleva == 3 or zprava == 3:
+        return True
+    return False
+    
+
+# Kontrola podvodu
 def zadej_vstup(pole, hrac):
     print("Na tahu je hráč %s."%(hrac))
     vstup = True
@@ -30,16 +66,27 @@ def zadej_vstup(pole, hrac):
 
     return souradnice
 
-# Hra - 1. a 2. hráč
+# Hra, hraci
 def hra():
     plocha = vytvor_sachovnici()
     hraci = ["X","O"]
-    for tah in range(9):
+    tah = 0
+    while tah < 9:
         zobraz_plochu(plocha)
-        hrac = hraci [tah %2]
+        hrac = hraci[tah % 2]
         souradnice = zadej_vstup(plocha, hrac)
         plocha[souradnice[0]][souradnice[1]] = hrac
-    zobraz_plochu(plocha)
+
+        if zkontroluj(plocha, hrac):
+            break
         
+        tah += 1
+        
+    zobraz_plochu(plocha)
+    if tah == 9:
+        print("Remíza.")
+    else:
+        print("Vyhrál hráč {}.".format(hrac))
 
 hra()
+
